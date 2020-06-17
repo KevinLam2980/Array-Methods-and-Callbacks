@@ -137,29 +137,30 @@ function getGoals(data) {
 
     let avGoals = {};
         data.filter((state) => {
-        if(avGoals.indexOf(state["Home Team Name"]) < 0){
+        if(!avGoals[state["Home Team Name"]]){
             return avGoals[state["Home Team Name"]] = {score: 0, games: 0, avg: null};
-        } if(avGoals.indexOf(state["Away Team Name"]) < 0){
+        } if(!avGoals[state["Away Team Name"]]){
             return avGoals[state["Away Team Name"]] = {score: 0, games: 0, avg: null};
         }
     })
-    console.log(avGoals);
-    console.log(avGoals["France"]);
-    console.log(avGoals["France"]["score"]);
 
     data.forEach((state) => {
         avGoals[state["Home Team Name"]]["score"] += state["Home Team Goals"];
         avGoals[state["Home Team Name"]]["games"] ++;
-        // console.log(state["Away Team Name"]);
-        // console.log(avGoals);
-        // console.log(avGoals.length);
 
         avGoals[state["Away Team Name"]]["score"] += state["Away Team Goals"];
         avGoals[state["Away Team Name"]]["games"] ++;
-        
     })
- 
-    console.log(avGoals);
+    
+    const teams = Object.entries(avGoals);
+    let highestAvg = teams[0];
+    for(let i = 0; i < teams.length; i++){
+        teams[i][1]["avg"] = teams[i][1]["score"] / teams[i][1]["games"];
+        if(teams[i][1]["avg"] > highestAvg[1]["avg"]){
+            highestAvg = teams[i];
+        }
+    }
+    console.log(`${highestAvg[0]}, with an average of ${highestAvg[1]["avg"]} scores per game played.`);
 };
 
 getGoals(fifaData);
